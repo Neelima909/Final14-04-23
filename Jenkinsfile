@@ -10,7 +10,16 @@ node {
 		app = docker.build("${dockerhubaccountid}/${application}:${BUILD_NUMBER}")
 	}
 
-	
+	stage('Push image') {
+		withDockerRegistry([ credentialsId: "DockerHubcred", url: "" ]) {
+		app.push()
+		
+	}
+	}
+
+	stage('Deploy') {
+		sh ("docker run -d -p 81:8080 ${dockerhubaccountid}/${application}:${BUILD_NUMBER}")
+	}
 	
 	
 }
